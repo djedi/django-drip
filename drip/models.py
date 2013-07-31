@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from django.utils.importlib import import_module
 
 try:
     from django.contrib.auth import get_user_model
@@ -34,6 +35,8 @@ class Drip(models.Model):
     body_html_template = models.TextField(null=True, blank=True,
         help_text='You will have settings and user in the context.')
     message_class = models.CharField(max_length=120, blank=True, default='default')
+    check_function = models.CharField(max_length=255, blank=True, null=True,
+        help_text='External check function, leave blank for none')
 
     @property
     def drip(self):
@@ -46,6 +49,22 @@ class Drip(models.Model):
                         subject_template=self.subject_template if self.subject_template else None,
                         body_template=self.body_html_template if self.body_html_template else None)
         return drip
+
+    def run_check(self, user):
+        if self.check_function:
+            func_file = getattr(settings, 'DRIP_FUNCTION_FILE', None)
+            if not func_file: return False
+
+            try:
+                mod = import_module(func_file)
+                function = getattr(mod, self.check_function, None)
+                if not function: return False
+
+                return function(self, user)
+            except ImportError:
+                return False
+
+        return True
 
     def __unicode__(self):
         return self.name

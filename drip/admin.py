@@ -3,6 +3,8 @@ import json
 
 from django import forms
 from django.contrib import admin
+from django.conf import settings
+from django.utils.importlib import import_module
 try:
     from django.contrib.auth import get_user_model
     User = get_user_model()
@@ -21,6 +23,27 @@ class DripForm(forms.ModelForm):
     message_class = forms.ChoiceField(
         choices=((k, '%s (%s)' % (k, v)) for k, v in configured_message_classes().items())
     )
+
+    def __init__(self, *args, **kwargs):
+        super(DripForm, self).__init__(*args, **kwargs)
+
+        func_file = getattr(settings, 'DRIP_FUNCTION_FILE', None)
+        choices = [('', '...')]
+        if func_file:
+            try:
+                mod = import_module(func_file)
+                attrs = dir(mod)
+
+                for attr in attrs:
+                    attr_func = getattr(mod, attr)
+                    if attr.startswith('check_') and callable(attr_func):
+                        choices.append((attr, "%s()" % (attr,)))
+                        
+            except ImportError:
+                pass
+
+        self.fields['check_function'].widget = forms.Select(choices=choices)
+
     class Meta:
         model = Drip
 

@@ -209,6 +209,7 @@ class DripBase(object):
 
         count = 0
         for user in self.get_queryset():
+            if not self.drip_model.run_check(user): continue
             message_instance = MessageClass(self, user)
             result = message_instance.message.send()
             if result:
