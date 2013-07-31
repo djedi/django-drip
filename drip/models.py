@@ -1,8 +1,13 @@
 from datetime import datetime, timedelta
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+
+# for Django 1.5 support
+try:
+    from settings import AUTH_USER_MODEL
+except ImportError:
+    AUTH_USER_MODEL = 'auth.User'
 
 # just using this to parse, but totally insane package naming...
 # https://bitbucket.org/schinckel/django-timedelta-field/
@@ -53,7 +58,7 @@ class SentDrip(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     drip = models.ForeignKey('drip.Drip', related_name='sent_drips')
-    user = models.ForeignKey('auth.User', related_name='sent_drips')
+    user = models.ForeignKey(AUTH_USER_MODEL, related_name='sent_drips')
 
     subject = models.TextField()
     body = models.TextField()
