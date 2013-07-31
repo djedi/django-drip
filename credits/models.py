@@ -1,6 +1,6 @@
 # for Django 1.5 support
 try:
-    from settings import AUTH_USER_MODEL
+    from django.conf.settings import AUTH_USER_MODEL
 except ImportError:
     AUTH_USER_MODEL = 'auth.User'
 
