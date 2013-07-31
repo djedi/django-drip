@@ -36,8 +36,8 @@ class DripForm(forms.ModelForm):
 
                 for attr in attrs:
                     attr_func = getattr(mod, attr)
-                    if attr.drip_check_function and callable(attr_func):
-                        choices.append((attr, attr.drip_check_name))
+                    if attr_func.drip_check_function and callable(attr_func):
+                        choices.append((attr, attr_func.drip_check_name))
                         
             except ImportError:
                 pass
