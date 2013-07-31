@@ -27,7 +27,7 @@ class DripForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DripForm, self).__init__(*args, **kwargs)
 
-        func_file = getattr(settings, 'DRIP_FUNCTION_FILE', None)
+        func_file = getattr(settings, 'DRIP_FUNCTION_MODULE', None)
         choices = [('', '...')]
         if func_file:
             try:

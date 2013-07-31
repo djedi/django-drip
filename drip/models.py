@@ -52,7 +52,7 @@ class Drip(models.Model):
 
     def run_check(self, user):
         if self.check_function:
-            func_file = getattr(settings, 'DRIP_FUNCTION_FILE', None)
+            func_file = getattr(settings, 'DRIP_FUNCTION_MODULE', None)
             if not func_file: return False
 
             try:
