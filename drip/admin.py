@@ -36,7 +36,7 @@ class DripForm(forms.ModelForm):
 
                 for attr in attrs:
                     attr_func = getattr(mod, attr)
-                    if hasattr(attr_func. 'drip_check_function') and \
+                    if hasattr(attr_func, 'drip_check_function') and \
                         attr_func.drip_check_function and callable(attr_func):
                         choices.append((attr, attr_func.drip_check_name))
                         
