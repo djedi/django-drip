@@ -1,8 +1,7 @@
+from django.conf import settings
+
 # for Django 1.5 support
-try:
-    from django.conf.settings import AUTH_USER_MODEL
-except ImportError:
-    AUTH_USER_MODEL = 'auth.User'
+AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 from django.db import models
 
