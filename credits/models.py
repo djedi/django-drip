@@ -1,4 +1,9 @@
-from django.contrib.auth.models import User
+# for Django 1.5 support
+try:
+    from settings import AUTH_USER_MODEL
+except ImportError:
+    AUTH_USER_MODEL = 'auth.User'
+
 from django.db import models
 
 
@@ -6,7 +11,7 @@ class Profile(models.Model):
     """
     For testing, track the number of "credits".
     """
-    user = models.ForeignKey('auth.User')
+    user = models.ForeignKey(AUTH_USER_MODEL)
     credits = models.PositiveIntegerField(default=0)
 
 
